@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="te" class="paper-2a">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#5B47D6">
+  <meta name="description" content="AP & TS TET Previous Year Question Papers & Mock Practice Portal (Paper 1A & Paper 2A)">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-title" content="TET PYQs">
+  <title>TET PYQs - Previous Year Question Papers (AP & TS TET)</title>
+  <link rel="manifest" href="manifest.json">
+  <link rel="stylesheet" href="css/app.css">
+  <link rel="icon" type="image/png" href="img/e0531dc740.png">
+</head>
+<body>
+  <div id="app">
+    <!-- Main Top Application Bar -->
+    <header class="app-bar" id="appBar" style="display: none;">
+      <div class="wrap app-bar-inner">
+        <div class="app-brand" onclick="App.navigate('home')">
+          <div class="app-logo-badge" id="appLogoBadge">TET</div>
+          <div class="app-brand-titles">
+            <h1 id="appHeaderTitle">TET Exam Portal</h1>
+            <p id="appHeaderSub">AP & TS TET Previous Year Papers</p>
+          </div>
+        </div>
+        <div class="app-actions">
+          <!-- Language Toggle -->
+          <button class="icon-btn" id="btnToggleLang" title="Change Language (Telugu/English)" onclick="App.cycleLanguage()">
+            <span style="font-weight: 800; font-size: 0.85rem;" id="langBadge">తె|EN</span>
+          </button>
+          
+          <!-- Dark / Light Theme -->
+          <button class="icon-btn" id="btnToggleTheme" title="Toggle Dark/Light Mode" onclick="App.toggleTheme()">
+            <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" id="themeIcon">
+              <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+            </svg>
+          </button>
+
+          <!-- Bookmarks Link -->
+          <button class="icon-btn" title="Saved / Bookmarked Questions" onclick="App.navigate('bookmarks')">
+            <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
+            </svg>
+          </button>
+
+          <!-- Candidate Profile Pill -->
+          <div class="user-pill" onclick="App.openProfileModal()" id="userPill">
+            <div class="user-avatar" id="userAvatar">S</div>
+            <span id="userNameDisplay">Student</span>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <!-- Main View Container -->
+    <main id="viewContainer" style="flex: 1;"></main>
+
+    <!-- Slide-over / Modal: Question Jump Palette -->
+    <div class="overlay" id="paletteOverlay" onclick="App.closeModals(event)">
+      <div class="sheet" onclick="event.stopPropagation()">
+        <div class="sheet-head">
+          <div style="display: flex; align-items: center; gap: 0.5rem;">
+            <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <rect x="3" y="3" width="7" height="7"></rect>
+              <rect x="14" y="3" width="7" height="7"></rect>
+              <rect x="14" y="14" width="7" height="7"></rect>
+              <rect x="3" y="14" width="7" height="7"></rect>
+            </svg>
+            <h3>Question Palette (బిట్ సంఖ్య)</h3>
+          </div>
+          <button class="icon-btn" onclick="App.closePalette()">✕</button>
+        </div>
+        <div class="sheet-body">
+          <div class="palette-legend">
+            <div class="legend-item"><span class="legend-dot ok"></span> Correct / సరైనవి</div>
+            <div class="legend-item"><span class="legend-dot bad"></span> Wrong / తప్పులు</div>
+            <div class="legend-item"><span class="legend-dot cur"></span> Current / ప్రస్తుత ప్రశ్న</div>
+            <div class="legend-item"><span class="legend-dot un"></span> Unattempted / రాయనివి</div>
+          </div>
+          <div style="margin-top: 1rem;" id="paletteContainer" class="palette-grid"></div>
+        </div>
+        <div class="sheet-foot">
+          <button class="btn btn-secondary btn-block" onclick="App.closePalette()">Close / మూసివేయి</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Fullscreen Diagram Zoom Modal -->
+    <div class="zoom-modal" id="zoomModal">
+      <div style="display: flex; justify-content: flex-end; padding-bottom: 0.5rem;">
+        <button class="btn btn-secondary" onclick="App.closeZoom()">✕ Close Diagram</button>
+      </div>
+      <div class="zoom-modal-img">
+        <img id="zoomImg" src="" alt="Question Diagram Fullscreen">
+      </div>
+    </div>
+
+    <!-- Candidate Profile / Settings Modal -->
+    <div class="overlay" id="profileOverlay" onclick="App.closeModals(event)">
+      <div class="sheet" onclick="event.stopPropagation()">
+        <div class="sheet-head">
+          <h3>Student Profile / విద్యార్థి వివరాలు</h3>
+          <button class="icon-btn" onclick="App.closeProfileModal()">✕</button>
+        </div>
+        <div class="sheet-body">
+          <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1.2rem; padding: 0.8rem; background: var(--sunken); border-radius: 16px;">
+            <div class="user-avatar" style="width: 3.2rem; height: 3.2rem; font-size: 1.5rem;" id="modalAvatar">S</div>
+            <div>
+              <b style="font-size: 1.1rem; display: block;" id="modalName">Candidate</b>
+              <span style="font-size: 0.82rem; color: var(--muted);" id="modalRoll">HT: 2026-TET-01</span>
+              <div style="margin-top: 0.3rem;" id="modalPaperBadge">
+                <span class="paper-badge">Paper 2A</span>
+              </div>
+            </div>
+          </div>
+
+          <h4 style="margin: 1rem 0 0.4rem; font-size: 0.92rem;">Text Size (అక్షర పరిమాణం)</h4>
+          <div class="seg-group" style="width: 100%; display: grid; grid-template-columns: 1fr 1fr 1fr;">
+            <button class="seg-btn" id="fsNormal" onclick="App.setFontSize('normal')">A (Normal)</button>
+            <button class="seg-btn" id="fsLg" onclick="App.setFontSize('lg')">A+ (Large)</button>
+            <button class="seg-btn" id="fsXl" onclick="App.setFontSize('xl')">A++ (Extra)</button>
+          </div>
+
+          <h4 style="margin: 1.2rem 0 0.4rem; font-size: 0.92rem;">Language Display (భాష ఎంపిక)</h4>
+          <div class="seg-group" style="width: 100%; display: grid; grid-template-columns: 1fr 1fr 1fr;">
+            <button class="seg-btn" id="langBoth" onclick="App.setLanguage('both')">తెలుగు + English</button>
+            <button class="seg-btn" id="langTe" onclick="App.setLanguage('te')">తెలుగు మాత్రమే</button>
+            <button class="seg-btn" id="langEn" onclick="App.setLanguage('en')">English Only</button>
+          </div>
+
+          <div style="margin-top: 1.5rem;">
+            <button class="btn btn-secondary btn-block" style="color: var(--bad); border-color: var(--bad-line);" onclick="App.resetProgress()">
+              Reset Practice Progress (డేటా క్లియర్)
+            </button>
+          </div>
+        </div>
+        <div class="sheet-foot">
+          <button class="btn btn-primary btn-block" onclick="App.logout()">
+            <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+              <polyline points="16 17 21 12 16 7"></polyline>
+              <line x1="21" y1="12" x2="9" y2="12"></line>
+            </svg>
+            Sign Out / లాగ్ అవుట్
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Exam Submit & Scorecard Modal -->
+    <div class="overlay" id="scoreOverlay" onclick="App.closeModals(event)">
+      <div class="sheet" onclick="event.stopPropagation()">
+        <div class="sheet-head">
+          <h3>Exam Result / ఫలితం</h3>
+          <button class="icon-btn" onclick="App.closeScorecard()">✕</button>
+        </div>
+        <div class="sheet-body" style="text-align: center;">
+          <div style="width: 5rem; height: 5rem; margin: 0 auto 0.8rem; border-radius: 50%; background: var(--ok-bg); color: var(--ok); display: flex; align-items: center; justify-content: center; font-size: 1.8rem; font-weight: 800;">
+            <span id="scorePercentage">85%</span>
+          </div>
+          <h2 style="margin: 0; font-size: 1.35rem;" id="scoreSummaryTitle">Well Done!</h2>
+          <p style="color: var(--muted); margin: 0.3rem 0 1.2rem; font-size: 0.9rem;" id="scoreSummarySubtitle">You have completed the test paper.</p>
+          
+          <div class="stats-row">
+            <div class="stat-card">
+              <div class="stat-val" style="color: var(--ok);" id="scoreCorrect">42</div>
+              <div class="stat-lbl">Correct</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-val" style="color: var(--bad);" id="scoreWrong">8</div>
+              <div class="stat-lbl">Wrong</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-val" style="color: var(--muted);" id="scoreUnattempted">10</div>
+              <div class="stat-lbl">Skipped</div>
+            </div>
+          </div>
+        </div>
+        <div class="sheet-foot">
+          <button class="btn btn-secondary" style="flex: 1;" onclick="App.retakeExam()">Retake Exam</button>
+          <button class="btn btn-primary" style="flex: 1;" onclick="App.reviewMistakes()">Review Answers</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Toast Notification -->
+    <div class="toast-msg" id="toastMsg">Notification message</div>
+  </div>
+
+  <script src="js/app.js"></script>
+</body>
+</html>
